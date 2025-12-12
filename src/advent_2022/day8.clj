@@ -60,7 +60,7 @@
                     (map #(map (fn [x] (Integer/parseInt x)) %))
                     (map vec))
               conj
-              (read-lines-eager "day8.txt"))))
+              (read-lines-eager "advent_2022/day8.txt"))))
 (println (part1 G))
 
 

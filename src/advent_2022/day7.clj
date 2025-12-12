@@ -17,7 +17,7 @@
   ; (14 [7] [2])
   :ref)
 
-(def input (read-lines-eager "day7.txt"))
+(def input (read-lines-eager "advent_2022/day7.txt"))
 
 ;; Convert a stream of input strings into a sized-dir tree.
 ;;

@@ -40,7 +40,7 @@
 
 ;; Load the problem from a file and apply the given solver to its contents
 (defn solve [solver]
-  (let [url (jio/resource "day2.txt")]
+  (let [url (jio/resource "advent_2022/day2.txt")]
     (with-open [r (jio/reader url)]
       (solver (line-seq r)))))
 

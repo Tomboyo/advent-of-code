@@ -4,7 +4,7 @@
             [clojure.tools.trace :refer [trace]]))
 
 ; PART 1
-(def input (->> (jio/resource "day12.txt")
+(def input (->> (jio/resource "advent_2022/day12.txt")
                 (slurp)
                 (str/split-lines)))
 

@@ -44,6 +44,6 @@
     (transduce xform + 0 lines)))
 
 (comment
-  (solve part1 "day4.txt")
-  (solve part2 "day4.txt")
+  (solve part1 "advent_2022/day4.txt")
+  (solve part2 "advent_2022/day4.txt")
   :ref)

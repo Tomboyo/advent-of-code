@@ -33,7 +33,7 @@
     (sequential? right)
     (inorder? [left] right)))
 
-(def input (slurp (jio/resource "day13.txt")))
+(def input (slurp (jio/resource "advent_2022/day13.txt")))
 
 ; Part 1
 (->> (str/split-lines input)

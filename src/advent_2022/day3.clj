@@ -57,7 +57,7 @@
 
 ;; Apply a solver to the problem line-by-line
 (defn solve [solver]
-  (let [url (jio/resource "day3.txt")]
+  (let [url (jio/resource "advent_2022/day3.txt")]
     (with-open [r (jio/reader url)]
       (solver (line-seq r)))))
 

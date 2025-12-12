@@ -44,7 +44,7 @@
          (map #(Integer/parseInt %))
          ; Group numbers by line: [sensor-x sensor-y beacon-x beacon-y]
          (partition 4)))))
-(comment (read-problem-input (io/resource "day15-test.txt")))
+(comment (read-problem-input (io/resource "advent_2022/day15.test.txt")))
 
 (defn taxicab-distance
   ([ax ay bx by] (+ (abs (- bx ax)) (abs (- by ay))))
@@ -108,8 +108,8 @@
     (- covered-by-intervals covered-by-beacons)))
 
 (comment
-  (part1 10 (io/resource "day15-test.txt"))
-  (part1 2000000 (io/resource "day15.txt")))
+  (part1 10 (io/resource "advent_2022/day15.test.txt"))
+  (part1 2000000 (io/resource "advent_2022/day15.txt")))
 
 (defn part2
   [resource]
@@ -132,5 +132,5 @@
 ;; don't intersect, so you can basically just stop when you have an interval
 ;; that doesn't intersect with the previous one. This should help with
 ;; performance.
-(comment (part2 (io/resource "day15-test.txt"))
-         (part2 (io/resource "day15.txt")))
+(comment (part2 (io/resource "advent_2022/day15.test.txt"))
+         (part2 (io/resource "advent_2022/day15.txt")))

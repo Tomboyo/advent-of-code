@@ -19,7 +19,7 @@
 
 ;; Open the input file and create a lazy sequence from its contents. Transduce those lines using xform, which finds the largest calorie inventory of all inventories in the file.
 (defn part1 []
-  (let [url (clojure.java.io/resource "day1.txt")]
+  (let [url (clojure.java.io/resource "advent_2022/day1.txt")]
     (with-open [reader ( clojure.java.io/reader url)]
       (transduce xform max 0 (line-seq reader)))))
 
@@ -33,7 +33,7 @@
 
 ;; Like part 1, but the transduction reduces to alist of the top 3 values, and then reduces those to their sum.
 (defn part2 []
-  (let [url (clojure.java.io/resource "day1.txt")]
+  (let [url (clojure.java.io/resource "advent_2022/day1.txt")]
     (with-open [reader (clojure.java.io/reader url)]
       (reduce + (transduce xform max3 (line-seq reader))))))
 

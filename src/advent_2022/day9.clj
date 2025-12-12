@@ -67,7 +67,7 @@
           [(conj acc t) h' t])))
     ;; Initially, H and T start on the same arbitrary point.
     [#{[0 0]} [0 0] [0 0]]
-    (read-lines-eager "day9.txt")))
+    (read-lines-eager "advent_2022/day9.txt")))
 
 ;; PART 2
 ;; Like part 1, but now there 9 instances of T that follow along in a chain.
@@ -94,4 +94,4 @@
               (recur b' (first xs) (rest xs) (conj xs' b')))))))
     ;; Initially, H and T1 - T9 start on the same arbitrary point.
     [#{[0 0]} (repeat 10 [0 0])]
-    (read-lines-eager "day9.txt")))
+    (read-lines-eager "advent_2022/day9.txt")))

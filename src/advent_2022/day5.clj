@@ -95,7 +95,7 @@
 
 (comment
   (() (a b c) [])
-  (solve part1 "day5.txt")
-  (solve part1-2 "day5.txt")
-  (solve part2 "day5.txt")
+  (solve part1 "advent_2022/day5.txt")
+  (solve part1-2 "advent_2022/day5.txt")
+  (solve part2 "advent_2022/day5.txt")
   :ref)

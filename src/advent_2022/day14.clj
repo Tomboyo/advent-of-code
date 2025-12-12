@@ -61,7 +61,7 @@
 (world-empty? {13 #{497 498 499 500 501 502}} 503 13)
 
 (defn solver [update-world]
-  (with-open [reader (io/reader  (io/resource "day14.txt"))]
+  (with-open [reader (io/reader  (io/resource "advent_2022/day14.txt"))]
     (as-> (line-seq reader) it
       (map (fn [y] (str/split y #" -> ")) it)
       (map (fn [path]

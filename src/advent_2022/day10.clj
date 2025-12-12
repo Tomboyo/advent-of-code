@@ -52,7 +52,7 @@
                       ; Sum of signal strengths
                       +
                       ; Generate the first 180 cycles of state for this program.
-                      (->> "day10.txt"
+                      (->> "advent_2022/day10.txt"
                            read-lines-eager
                            (map parse-command)
                            (run-machine 1)
@@ -77,7 +77,7 @@
            str
            ; Run the entire program.
            ; See also day10.test.txt
-           (->> "day10.txt"
+           (->> "advent_2022/day10.txt"
                 read-lines-eager
                 (map parse-command)
                 (run-machine 1))))
