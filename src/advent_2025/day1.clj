@@ -1,6 +1,6 @@
 (ns advent-2025.day1
   (:require clojure.java.io
-            [clojure.math :as math]))
+            [clojure.string :as str]))
 
 (defn line-to-cmd
   "Parses lines into integers. E.g. L5 becomes -5 and R5 becomes 5."
@@ -39,15 +39,13 @@
   (dial-history 50 99 (seq [-70])))
 
 (defn solve-part-1
-  "Given a dial starting at 0 and ending at dial-max, repeatedly rotate the dial based on a series of commands and count
-  the number of times the dial stops on 0."
-  [dial-pos dial-max lines]
+  [start dial-max lines]
   (->> (map line-to-cmd lines)
-       (dial-history dial-pos dial-max)
-       (filter (fn [{after :after}] (= after 0)))
-       (map :after)
-       (count)
-       ))
+       (reduce (fn [[pos count] offset]
+                 (let [n (turn-dial pos dial-max offset)]
+                   [n (if (= 0 n) (inc count) count)]))
+               [start 0])
+       (second)))
 
 (defn solve-part-2
   "Given a dial starting at 0 and ending at dial-max, repeatedly rotate the dial based on a series of commands and count
@@ -71,16 +69,7 @@
        (map :clicks)
        (reduce + 0)))
 
-(defn solve-part-1-from-resource [dial-pos dial-max name]
-  (let [url (clojure.java.io/resource name)]
-    (with-open [reader (clojure.java.io/reader url)]
-      (solve-part-1 dial-pos dial-max (line-seq reader)))))
-
-(defn solve-part-2-from-resource [dial-pos dial-max name]
-  (let [url (clojure.java.io/resource name)]
-    (with-open [reader (clojure.java.io/reader url)]
-      (solve-part-2 dial-pos dial-max (line-seq reader)))))
-
 (comment
-  (solve-part-1-from-resource 50 99 "advent_2025/day1.txt")
-  (solve-part-2-from-resource 50 99 "advent_2025/day1.txt"))
+  (solve-part-1 50 99 (str/split-lines (slurp "resources/advent_2025/day1.txt"))) ; 1089
+  (solve-part-2 50 99 (str/split-lines (slurp "resources/advent_2025/day1.txt"))) ; 6530
+  )
