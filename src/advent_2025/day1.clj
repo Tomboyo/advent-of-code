@@ -1,7 +1,7 @@
 (ns advent-2025.day1
   (:require clojure.java.io
             [clojure.string :as str]
-            [clojure.core.reducers :as r]))
+            [advent.more :as more]))
 
 (defn line-to-cmd
   "Parses lines into integers. E.g. L5 becomes -5 and R5 becomes 5."
@@ -22,44 +22,15 @@
   (turn-dial 99 99 1)                                       ; 0
   )
 
-(defn map-left
-  "Returns a transducer. Like map, but the output of each application of f is passed as the first argument of successive
-  applications of f. f is called with only one argument when applied to the first element of the reduction, and two
-  arguments thereafter."
-  ([f]
-    (fn [rf]
-      (let [prev (volatile! nil)]
-        (fn
-          ([] (rf))
-          ([result] (rf result))
-          ([result input]
-           (let [v (if (nil? @prev)
-                     (f input)
-                     (f @prev input))]
-             (vreset! prev v)
-             (rf result v)))
-          ([result input & inputs]
-           (let [v (if (nil? @prev)
-                     (apply f input inputs)
-                     (apply f @prev input inputs))]
-             (vreset! prev v)
-             (rf result v))))))))
-
-(defn counter
-  "A reducer that counts occurrences."
-  ([] 0)
-  ([result] result)
-  ([result _] (inc result)))
-
 (defn solve-part-1
   "Repeatedly rotate a dial numbered from 0 to dial-max, returning the number of times it comes to a stop on 0."
   [start dial-max lines]
   (transduce
     (comp (map line-to-cmd)
-          (map-left (fn ([offset] (turn-dial start dial-max offset))
-                        ([dial offset] (turn-dial dial dial-max offset))))
+          (more/map-left (fn ([offset] (turn-dial start dial-max offset))
+                           ([dial offset] (turn-dial dial dial-max offset))))
           (filter (partial = 0)))
-    counter
+    more/counter
     lines))
 
 (defn solve-part-2
@@ -78,8 +49,8 @@
     (transduce
       (comp (map line-to-cmd)
             ; xform the input into tuples of [starting-pos offset ending-pos]
-            (map-left (fn ([offset] [start offset (turn-dial start dial-max offset)])
-                          ([[_ _ pos] offset] [pos offset (turn-dial pos dial-max offset)])))
+            (more/map-left (fn ([offset] [start offset (turn-dial start dial-max offset)])
+                             ([[_ _ pos] offset] [pos offset (turn-dial pos dial-max offset)])))
             (map count-through-zero))
       +
       lines)))
