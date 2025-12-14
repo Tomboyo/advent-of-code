@@ -1,6 +1,7 @@
 (ns advent-2025.day1
   (:require clojure.java.io
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [clojure.core.reducers :as r]))
 
 (defn line-to-cmd
   "Parses lines into integers. E.g. L5 becomes -5 and R5 becomes 5."
@@ -38,14 +39,51 @@
 (comment
   (dial-history 50 99 (seq [-70])))
 
+
+(defn map-left
+  "Returns a transducer. Like map, but the output of each application of f is passed as the first argument of successive
+  applications of f. f is called with only one argument when applied to the first element of the reduction, and two
+  arguments thereafter."
+  ([f]
+    (fn [rf]
+      (let [prev (volatile! nil)]
+        (fn
+          ([] (rf))
+          ([result] (rf result))
+          ([result input]
+           (let [v (if (nil? @prev)
+                     (f input)
+                     (f @prev input))]
+             (vreset! prev v)
+             (rf result v)))
+          ([result input & inputs]
+           (let [v (if (nil? @prev)
+                     (apply f input inputs)
+                     (apply f @prev input inputs))]
+             (vreset! prev v)
+             (rf result v))))))))
+
+(transduce
+  (map-left (fn ([x] x) ([acc x] (+ acc x))))
+  +
+  [1 1 1 1 1])
+
+(defn counter
+  "A reducer that counts occurrences."
+  ([] 0)
+  ([result] result)
+  ([result _] (inc result)))
+
 (defn solve-part-1
+  "Repeatedly rotate a dial numbered from 0 to dial-max, returning the number of times it comes to a stop on 0."
   [start dial-max lines]
-  (->> (map line-to-cmd lines)
-       (reduce (fn [[pos count] offset]
-                 (let [n (turn-dial pos dial-max offset)]
-                   [n (if (= 0 n) (inc count) count)]))
-               [start 0])
-       (second)))
+  (transduce
+    (comp (map line-to-cmd)
+          (map-left (fn ([offset] (turn-dial start dial-max offset))
+                        ([dial offset] (turn-dial dial dial-max offset))))
+          (filter (partial = 0)))
+    counter
+    lines))
 
 (defn solve-part-2
   "Given a dial starting at 0 and ending at dial-max, repeatedly rotate the dial based on a series of commands and count
@@ -71,5 +109,6 @@
 
 (comment
   (solve-part-1 50 99 (str/split-lines (slurp "resources/advent_2025/day1.txt"))) ; 1089
+  (solve-part-1 50 99 (seq ["R1000" "L1000" "R1" "L1" "L1" "R1" "R50" "L50" "L50" "R50"])) ; 2
   (solve-part-2 50 99 (str/split-lines (slurp "resources/advent_2025/day1.txt"))) ; 6530
   )
