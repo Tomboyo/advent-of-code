@@ -15,28 +15,21 @@
 ;   - Those two digits form the largest number.
 ; this extends to any number of digits pretty easy.
 
-(defn find-digit [max-index digits]
-  (reduce (fn [[_mi md :as result] [i d :as current]]
-            (cond
-              (> i max-index)
-                (reduced result)
-              (= 9 d)
-                (reduced current)
-              (> d md)
-                current
-              :else
-                result
-              ))
+(defn find-digit [digits]
+  (reduce (fn [[_i max :as result] [_j x :as current]]
+            (cond (= 9 x)   (reduced current)
+                  (> x max) current
+                  :else     result))
           digits))
 
 (defn solve-part-1 [input]
   (cond
     (string? input)
-    (let [digits (->> (str/split input #"")
-                      (map-indexed #(vector %1 (parse-long %2)))
-                      (vec))
-          [i  a] (vec (find-digit (- (count digits) 2) digits))
-          [_j b] (find-digit (- (count digits) 1) (subvec digits (inc i)))
+    (let [digits (into []
+                       (map-indexed #(vector %1 (parse-long %2)))
+                       (str/split input #""))
+          [i  a] (find-digit (subvec digits 0 (dec (count digits))))
+          [_j b] (find-digit (subvec digits (inc i)))
           ]
       (+ b (* 10 a))
       )
