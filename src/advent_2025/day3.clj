@@ -17,27 +17,41 @@
 
 (defn find-digit [digits]
   (reduce (fn [[_i max :as result] [_j x :as current]]
-            (cond (= 9 x)   (reduced current)
+            (cond (= 9 x) (reduced current)
                   (> x max) current
-                  :else     result))
+                  :else result))
+          [-1 -1]
           digits))
 
-(defn solve-part-1 [input]
+(defn solve [n input]
   (cond
     (string? input)
     (let [digits (into []
                        (map-indexed #(vector %1 (parse-long %2)))
                        (str/split input #""))
-          [i  a] (find-digit (subvec digits 0 (dec (count digits))))
-          [_j b] (find-digit (subvec digits (inc i)))
-          ]
-      (+ b (* 10 a))
-      )
+          c (count digits)]
+      (first
+        (reduce
+          (fn [[result i] idx]
+            ; Each step uses subvec to control the upper and lower bounds of the search. The lower bound must be AFTER
+            ; the last digit picked, and the upper bound must reserve enough space at the end to ensure a sequence of
+            ; digits in tail position could be found for the result.
+            (let [from (+ i 1)
+                  to (- (+ c 1 idx) n)
+                  [j d] (find-digit (subvec digits from to))]
+              [(+ d (* 10 result)) j]
+              ))
+          [0 -1]
+          (range n))))
 
     :else
-    (reduce + (map solve-part-1 input))))
+    (reduce + (map #(solve n %) input))))
+
+(defn solve-part-1 [input] (solve 2 input))
 
 ; Part 2: We are validated. 12 digits per row!
+(defn solve-part-2 [input] (solve 12 input))
 
 (comment
-  (solve-part-1 (str/split-lines (slurp "resources/advent_2025/day3.part1.txt"))))
+  (solve-part-1 (str/split-lines (slurp "resources/advent_2025/day3.part1.txt")))
+  (solve-part-2 (str/split-lines (slurp "resources/advent_2025/day3.part1.txt"))))
