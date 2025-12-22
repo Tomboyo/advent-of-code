@@ -34,6 +34,9 @@
                                            "..^.^.."
                                            ".^.^.^."]))))))
 
+(deftest part1-solved
+  (is (= 1507 (solve-part-1 (slurp "resources/advent_2025/day7.txt")))))
+
 (deftest part2-test
   (testing "when the beam is never split, the answer is 1 timeline"
     (is (= 1 (solve-part-2 (str/join "\n" ["..S.."
@@ -57,3 +60,6 @@
                                            "..^.."
                                            ".^..."
                                            "...^."]))))))
+
+(deftest part2-solved
+  (is (= 1537373473728 (solve-part-2 (slurp "resources/advent_2025/day7.txt")))))
