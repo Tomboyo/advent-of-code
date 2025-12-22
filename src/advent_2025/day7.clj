@@ -6,14 +6,19 @@
 ; \^ characters mean "if column x is set, unset it and set (x - 1) and (x + 1)." Each time \^ causes a beam to split, we
 ; increment a counter. Not all \^ are in the path of a beam, so we can't just count them.
 
+(def input-xform
+  "A transducer that will convert the input into sequences of [index character] pairs, one per S or ^ in the problem
+   input. The index is the 0-based column number the glyph appears in."
+  (comp
+    (map #(.toCharArray %))
+    (map (partial keep-indexed #(when (contains? #{\^ \S} %2) [%1 %2])))
+    (filter (comp not empty?))))
+
 (defn solve-part-1 [input]
   (let [lines (str/split-lines input)
         cols (count (first lines))]
     (transduce
-      (comp
-        (map #(.toCharArray %))
-        (map (partial keep-indexed #(when (contains? #{\^ \S} %2) [%1 %2])))
-        (filter (comp not empty?)))
+      input-xform
       (fn
         ([[splits _state]] splits)
         ([[splits prior-state] inputs]
@@ -41,10 +46,7 @@
   (let [lines (str/split-lines input)
         cols (count (first lines))]
     (transduce
-      (comp
-        (map #(.toCharArray %))
-        (map (partial keep-indexed #(when (contains? #{\^ \S} %2) [%1 %2])))
-        (filter (comp not empty?)))
+      input-xform
       (fn
         ([state] (reduce + 0 state))
         ([prior-state inputs]
