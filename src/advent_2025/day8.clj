@@ -48,32 +48,52 @@
     (memoize #(apply distance %))
     (cartesian-product points)))
 
+(defn merge-circuits
+  "Merges a circuit into a set of disjoint circuits, returning a new set of disjoint circuits."
+  [circuits circuit]
+  (let [a (first circuit)
+        b (second circuit)
+        intersections (filter
+                        #(or (contains? % a) (contains? % b))
+                        circuits)]
+    (case (count intersections)
+      1 circuits                                            ; circuit is a subset, so there's nothing to do.
+      2 (conj (apply disj circuits intersections)
+              (apply set/union intersections)))))
+
 (defn solve-part-1
-  ([num-connections num-circuits input]
-   (let [boxes (parse-coordinates input)
-         to-connect (take num-connections (sorted-connections boxes))
-         circuits (reduce
-                    (fn [circuits circuit]
-                      (let [a (first circuit)
-                            b (second circuit)
-                            intersections (filter
-                                            #(or (contains? % a) (contains? % b))
-                                            circuits)]
-                        (case (count intersections)
-                          1 circuits                        ; circuit is a subset, so there's nothing to do.
-                          2 (conj (apply disj circuits intersections)
-                                  (apply set/union intersections)))))
-                    (into #{} (map (fn [x] #{x})) boxes)
-                    to-connect)
-         top-k-circuits (take num-circuits (reverse (sort-by count circuits)))]
-     (transduce
-       (map count)
-       *
-       1
-       top-k-circuits))))
+  [num-connections num-circuits input]
+  (let [boxes (parse-coordinates input)
+        to-connect (take num-connections (sorted-connections boxes))
+        circuits (reduce
+                   merge-circuits
+                   (into #{} (map (fn [x] #{x})) boxes)
+                   to-connect)
+        top-k-circuits (take num-circuits (reverse (sort-by count circuits)))]
+    (transduce
+      (map count)
+      *
+      1
+      top-k-circuits)))
+
+(defn solve-part-2
+  [input]
+  (let [boxes (parse-coordinates input)
+        to-connect (sorted-connections boxes)]
+    (reduce
+      (fn [circuits circuit]
+        (let [[a _ _] (first circuit)                       ; x coordinate of junction box
+              [b _ _] (second circuit)
+              new-circuits (merge-circuits circuits circuit)]
+          (if (= 1 (count new-circuits))
+            (reduced (* a b))
+            new-circuits)))
+      (into #{} (map (fn [x] #{x})) boxes)
+      to-connect)))
 
 (comment
   (solve-part-1 1000 3 (slurp "resources/advent_2025/day8.txt"))
+  (solve-part-2 (slurp "resources/advent_2025/day8.txt"))
 
   (use 'criterium.core)
   (with-progress-reporting
