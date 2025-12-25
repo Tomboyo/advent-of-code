@@ -28,3 +28,10 @@
   ([] 0)
   ([result] result)
   ([result _] (inc result)))
+
+(defn unordered-cartesian-product
+  "Returns a set of all unique pairs of elements from col without respect to their order. For example, given col
+  [:a :b :c], this returns the three-element set #{#{:a :b} #{:a :c} #{:b :c}}."
+  [col]
+  (into #{} (for [x col y col :when (not= x y)]
+              #{x y})))

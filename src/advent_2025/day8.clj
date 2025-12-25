@@ -1,5 +1,6 @@
 (ns advent-2025.day8
-  (:require [clojure.math :as math]
+  (:require [advent.more :as more]
+            [clojure.math :as math]
             [clojure.string :as str]
             [clojure.set :as set]))
 
@@ -29,10 +30,6 @@
 (defn distance [[x y z] [x' y' z']]
   (math/sqrt (+ (sqr (- x' x)) (sqr (- y' y)) (sqr (- z' z)))))
 
-(defn cartesian-product [col]
-  (into #{} (for [x col y col :when (not= x y)]
-              #{x y})))
-
 (defn parse-coordinates
   "Returns a lazy seq of coordinates vectors"
   [input]
@@ -46,7 +43,7 @@
   [points]
   (sort-by
     (memoize #(apply distance %))
-    (cartesian-product points)))
+    (more/unordered-cartesian-product points)))
 
 (defn merge-circuits
   "Merges a circuit into a set of disjoint circuits, returning a new set of disjoint circuits."

@@ -52,6 +52,9 @@
   (testing "given sample input"
     (is (= 40 (solve-part-1 10 3 sample)))))
 
+(deftest part-1-solution
+  (is 62186 (solve-part-1 1000 3 (slurp "resources/advent_2025/day8.txt"))))
+
 (deftest part-2-test
   (testing "multiplies the x coordinates of the last boxes joined to make a single circuit"
     (is (= 1500 (solve-part-2 (str/join "\n" ["0,0,0"
@@ -62,3 +65,6 @@
                                               "503,0,0"])))))
   (testing "given sample input"
     (is (= 25272 (solve-part-2 sample)))))
+
+(deftest part-2-solution
+  (is (= 8420405530 (solve-part-2 (slurp "resources/advent_2025/day8.txt")))))
